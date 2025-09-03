@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Змейка - Мобильная игра</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🐍 Змейка</h1>
+            <div class="score-board">
+                <span>Очки: <span id="score">0</span></span>
+                <span>Рекорд: <span id="highScore">0</span></span>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas" width="300" height="400"></canvas>
+        
+        <div class="controls">
+            <button id="pauseBtn" class="control-btn">⏸️ Пауза</button>
+            <button id="restartBtn" class="control-btn">🔄 Заново</button>
+        </div>
+        
+        <div class="instructions">
+            <p>Свайпай пальцем для управления змейкой</p>
+            <p>Съедай яблоки и расти!</p>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
