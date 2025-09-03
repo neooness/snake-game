@@ -18,6 +18,7 @@ class SnakeGame {
         this.highScore = localStorage.getItem('snakeHighScore') || 0;
         this.gameRunning = true;
         this.gamePaused = false;
+        this.gameStarted = false; // Новый флаг для отслеживания начала игры
         
         // Сенсорное управление
         this.touchStartX = 0;
@@ -63,15 +64,19 @@ class SnakeGame {
             // Горизонтальный свайп
             if (deltaX > 0 && this.dx === 0) {
                 this.dx = 1; this.dy = 0; // Вправо
+                this.gameStarted = true; // Игра началась
             } else if (deltaX < 0 && this.dx === 0) {
                 this.dx = -1; this.dy = 0; // Влево
+                this.gameStarted = true; // Игра началась
             }
         } else {
             // Вертикальный свайп
             if (deltaY > 0 && this.dy === 0) {
                 this.dx = 0; this.dy = 1; // Вниз
+                this.gameStarted = true; // Игра началась
             } else if (deltaY < 0 && this.dy === 0) {
                 this.dx = 0; this.dy = -1; // Вверх
+                this.gameStarted = true; // Игра началась
             }
         }
     }
@@ -79,16 +84,28 @@ class SnakeGame {
     handleKeyPress(e) {
         switch(e.key) {
             case 'ArrowUp':
-                if (this.dy === 0) { this.dx = 0; this.dy = -1; }
+                if (this.dy === 0) { 
+                    this.dx = 0; this.dy = -1; 
+                    this.gameStarted = true; // Игра началась
+                }
                 break;
             case 'ArrowDown':
-                if (this.dy === 0) { this.dx = 0; this.dy = 1; }
+                if (this.dy === 0) { 
+                    this.dx = 0; this.dy = 1; 
+                    this.gameStarted = true; // Игра началась
+                }
                 break;
             case 'ArrowLeft':
-                if (this.dx === 0) { this.dx = -1; this.dy = 0; }
+                if (this.dx === 0) { 
+                    this.dx = -1; this.dy = 0; 
+                    this.gameStarted = true; // Игра началась
+                }
                 break;
             case 'ArrowRight':
-                if (this.dx === 0) { this.dx = 1; this.dy = 0; }
+                if (this.dx === 0) { 
+                    this.dx = 1; this.dy = 0; 
+                    this.gameStarted = true; // Игра началась
+                }
                 break;
             case ' ':
                 this.togglePause();
@@ -97,8 +114,10 @@ class SnakeGame {
     }
     
     togglePause() {
-        this.gamePaused = !this.gamePaused;
-        this.pauseBtn.textContent = this.gamePaused ? '▶️ Играть' : '⏸️ Пауза';
+        if (this.gameStarted) { // Пауза только если игра началась
+            this.gamePaused = !this.gamePaused;
+            this.pauseBtn.textContent = this.gamePaused ? '▶️ Играть' : '⏸️ Пауза';
+        }
     }
     
     restart() {
@@ -109,12 +128,13 @@ class SnakeGame {
         this.score = 0;
         this.gameRunning = true;
         this.gamePaused = false;
+        this.gameStarted = false; // Сброс флага начала игры
         this.pauseBtn.textContent = '⏸️ Пауза';
         this.updateScore();
     }
     
     update() {
-        if (!this.gameRunning || this.gamePaused) return;
+        if (!this.gameRunning || this.gamePaused || !this.gameStarted) return; // Игра не обновляется, пока не началась
         
         // Движение змейки
         const head = {x: this.snake[0].x + this.dx, y: this.snake[0].y + this.dy};
@@ -200,6 +220,18 @@ class SnakeGame {
             this.ctx.moveTo(0, i * this.gridSize);
             this.ctx.lineTo(this.canvas.width, i * this.gridSize);
             this.ctx.stroke();
+        }
+        
+        // Показываем инструкцию, если игра еще не началась
+        if (!this.gameStarted) {
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            this.ctx.fillStyle = 'white';
+            this.ctx.font = '16px Arial';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('Нажми стрелку или свайпни', this.canvas.width/2, this.canvas.height/2 - 20);
+            this.ctx.fillText('для начала игры!', this.canvas.width/2, this.canvas.height/2 + 10);
         }
     }
     
